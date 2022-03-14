@@ -74,7 +74,7 @@ export default {
   },
 
   methods: {
-    login(event) {
+    login() {
       let role = this.role.toLowerCase();
       let checkData = {
         username: this.username,
@@ -92,6 +92,7 @@ export default {
           localStorage.setItem("user", JSON.stringify(user));
           localStorage.setItem("token", token);
           localStorage.setItem("role", role);
+          localStorage.setItem("reloading", true);
             console.log(res)
 
           if (role === "admin") {
@@ -102,69 +103,11 @@ export default {
             this.$router.push("/transaksi");
           }
           else{
-            this.$router.push("/list outlet");
+            this.$router.push("/home-owner");
           }
         }
       });
     },
-    // login(event) {
-    //   let role = this.role.toLowerCase();
-    //   let checkData = {
-    //     username: this.username,
-    //     password: this.password,
-    //   };
-
-    //   if (role === "siswa") {
-    //     let url_siswa = "http://localhost:5000/siswa/login";
-    //     axios
-    //       .post(url_siswa, checkData)
-    //       .then((response) => {
-    //         this.logged = response.data.logged;
-    //         if (this.logged === true) {
-    //           this.role = response.data.role;
-    //           let user = response.data.data;
-    //           let token = response.data.token;
-    //           let role = response.data.role;
-    //           localStorage.setItem("user", JSON.stringify(user));
-    //           localStorage.setItem("token", token);
-    //           localStorage.setItem("role", role);
-    //           window.location = "/siswa/home";
-    //           console.log(response);
-    //         } else {
-    //           console.log("gagal masuk");
-    //         }
-    //       })
-    //       .catch((error) => console.log(error));
-    //   } else {
-    //     let url_admin_petugas = "http://localhost:5000/v1/petugas/login";
-    //     axios
-    //       .post(url_admin_petugas, checkData)
-    //       .then((response) => {
-    //         this.logged = response.data.data.logged;
-    //         if (this.logged === true) {
-    //           this.role = response.data.data.role;
-    //           let user = response.data.data;
-    //           let token = response.data.data.token;
-    //           let fixRole = response.data.data.role.toLowerCase();
-    //           localStorage.setItem("user", JSON.stringify(user));
-    //           localStorage.setItem("token", token);
-    //           localStorage.setItem("role", fixRole);
-
-    //           if (fixRole === "admin") {
-    //             window.location = "/transaksi";
-    //             console.log(response);
-    //           } else {
-    //             window.location = "/siswa";
-    //           }
-    //         } else {
-    //           console.log("gagal masuk");
-    //           console.log(response.logged);
-    //         }
-    //       })
-    //       .catch((error) => console.log(error));
-    //     console.log("gagal masuk");
-    //   }
-    // },
   },
 };
 </script>
