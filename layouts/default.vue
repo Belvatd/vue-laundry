@@ -117,7 +117,6 @@
 
 <script>
 export default {
-  // name: "DefaultLayout",
   data() {
     return {
       clipped: false,
@@ -146,6 +145,11 @@ export default {
         },
         {
           icon: "mdi-accounts-bubble",
+          title: "Daftar Paket",
+          to: "/list-paket",
+        },
+        {
+          icon: "mdi-accounts-bubble",
           title: "Daftar User Admin",
           to: "/list-admin",
         },
@@ -163,13 +167,18 @@ export default {
       itemsKasir: [
         {
           icon: "mdi-accounts-bubble",
-          title: "Daftar User Admin",
-          to: "/list-admin",
+          title: "Transaksi",
+          to: "/transaksi",
         },
         {
           icon: "mdi-accounts-bubble",
-          title: "Daftar User Owner",
-          to: "/list-owner",
+          title: "Histori Transaksi",
+          to: "/histori",
+        },
+        {
+          icon: "mdi-accounts-bubble",
+          title: "Daftar Member",
+          to: "/list-member",
         },
       ],
       itemsOwner: [
@@ -190,7 +199,6 @@ export default {
       title: "Clean Laundry",
       token: "",
       role: "",
-      // reloading: false,
       isadmin: false,
       iskasir: false,
       isowner: false,
@@ -199,7 +207,6 @@ export default {
 
   mounted() {
     this.getToken();
-    // this.reloadOnce();
   },
   methods: {
     logout() {
@@ -207,13 +214,9 @@ export default {
       localStorage.removeItem("role");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-
-      // window.location.reload()
     },
     getToken() {
-      // window.location.reload();
       if (localStorage.getItem("token")) {
-        // console.log(this.role);
         if (localStorage.getItem("role") === "admin") {
           this.isadmin = true;
         } else if (localStorage.getItem("role") === "kasir") {
@@ -226,18 +229,6 @@ export default {
         this.$router.push("/");
       }
     },
-    // reloadOnce() {
-    //   this.reloading = localStorage.getItem("reloading");
-    //   if (!this.reloading) {
-    //     // localStorage.removeItem("reloading");
-    //     // console.log("ppp");
-    //     // window.location.reload();
-    //     console.log("ga reload");
-    //   } else {
-    //     localStorage.removeItem("reloading");
-    //     window.location.reload();
-    //   }
-    // },
   },
 };
 </script>

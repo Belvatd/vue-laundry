@@ -192,7 +192,7 @@ export default {
   methods: {
     getToken() {
       if (localStorage.getItem("token")) {
-        if (localStorage.getItem("role") === "admin") {
+        if (localStorage.getItem("role") === "admin" ||localStorage.getItem("role") === "kasir") {
           this.isAdmin = true;
         } else {
           this.notFound = true;
