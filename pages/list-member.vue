@@ -1,244 +1,346 @@
 <template>
-  <div id="app">
-  <v-app id="list-admin">
-    <v-data-table
-      :headers="headers"
-      :items="tableValues"
-      sort-by="calories"
-      class="elevation-1"
-    >
-      <template v-slot:top>
-        <v-toolbar
-          flat
-        >
-          <v-toolbar-title>Daftar Admin</v-toolbar-title>
-          <v-divider
-            class="mx-4"
-            inset
-            vertical
-          ></v-divider>
-          <v-spacer></v-spacer>
-          <v-dialog
-            v-model="dialog"
-            max-width="500px"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                dark
-                class="mb-2"
-                v-bind="attrs"
-                v-on="on"
-              >
-                New Item
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-  
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="editedItem.nama"
-                        label="Nama"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.username"
-                        label="Username"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.password"
-                        label="Password"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-  
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="close"
+  <div id="app" v-if="isAdmin">
+    <v-app id="list-admin">
+      <v-data-table
+        :headers="headers"
+        :items="tableValues"
+        sort-by="calories"
+        class="elevation-1"
+      >
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Daftar Member</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" dark class="mb-2" @click="tambahItem()">
+              Tambah Member
+            </v-btn>
+            <!-- MODAL TAMBAH -->
+            <v-dialog v-model="dialogTambah" max-width="500px">
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">{{ formTitle }}</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.nama_member"
+                          label="Nama"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.alamat"
+                          label="Alamat"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-select
+                          :items="jenis_kelamin"
+                          v-model="editedItem.jenis_kelamin"
+                          label="Jenis Kelamin"
+                        >
+                        </v-select>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.telp"
+                          label="No. Telepon"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="closeTambah">
+                    Cancel
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="add"> Save </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+            <!-- MODAL EDIT -->
+            <v-dialog v-model="dialogEdit" max-width="500px">
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">{{ formTitle }}</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.nama_member"
+                          label="Nama"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.alamat"
+                          label="Alamat"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-select
+                          :items="jenis_kelamin"
+                          v-model="editedItem.jenis_kelamin"
+                          label="Jenis Kelamin"
+                        >
+                        </v-select>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.telp"
+                          label="No. Telepon"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="closeEdit">
+                    Cancel
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="update">
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+            <!-- MODAL DELETE -->
+            <!-- <v-dialog v-model="dialogDelete" max-width="500px">
+              <v-card>
+                <v-card-title class="text-h5"
+                  >Are you sure you want to delete this item?</v-card-title
                 >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="save"
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <v-icon
-          small
-          class="mr-2"
-          @click="editItem(item)"
-        >
-          mdi-pencil
-        </v-icon>
-        <v-icon
-          small
-          @click="deleteItem(item)"
-        >
-          mdi-delete
-        </v-icon>
-      </template>
-      <template v-slot:no-data>
-        <v-btn
-          color="primary"
-          @click="initialize"
-        >
-          Reset
-        </v-btn>
-      </template>
-    </v-data-table>
-  </v-app>
-</div>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="closeDelete"
+                    >Cancel</v-btn
+                  >
+                  <v-btn color="blue darken-1" text>OK</v-btn>
+                  <v-spacer></v-spacer>
+                </v-card-actions>
+              </v-card>
+            </v-dialog> -->
+          </v-toolbar>
+        </template>
+
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon small class="mr-2" @click="editItem(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small @click="deleteData(item)"> mdi-delete </v-icon>
+        </template>
+        <template v-slot:no-data>
+          <p>No Data</p>
+        </template>
+      </v-data-table>
+    </v-app>
+  </div>
+  <div v-else-if="notFound">
+    <p>You're not allowed to access</p>
+  </div>
 </template>
 <script>
-  export default {
-    data: () => ({
-    dialog: false,
+export default {
+  data: () => ({
+    dialogTambah: false,
     dialogDelete: false,
+    dialogEdit: false,
+    jenis_kelamin: ["perempuan", "laki-laki"],
     headers: [
       {
-        text: 'ID',
+        text: "ID",
         sortable: false,
-        value: 'id',
+        value: "id_member",
       },
-      { text: 'Nama', value: 'nama', align: 'start'},
-      { text: 'Username', value: 'username' },
-      { text: 'Actions', value: 'actions', sortable: false },
+      { text: "Nama", value: "nama_member", align: "start" },
+      { text: "Alamat", value: "alamat" },
+      { text: "Jenis Kelamin", value: "jenis_kelamin" },
+      { text: "No. Telepon", value: "telp" },
+      { text: "Actions", value: "actions", sortable: false },
     ],
     tableValues: [],
     editedIndex: -1,
     editedItem: {
-      nama: '',
-      username: '',
-      password:''
+      nama_member: "",
+      alamat: "",
+      jenis_kelamin: "",
+      telp: "",
     },
-    defaultItem: {
-      id: '',
-      nama: '',
-      username: '',
-    },
+    // defaultItem: {
+    //   id: "",
+    //   nama_user: "",
+    //   username: "",
+    //   role: "",
+    // },
+    isAdmin: false,
+    notFound: false,
+    data: {},
+    token: "",
+    actions: "",
   }),
 
   computed: {
-    formTitle () {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+    formTitle() {
+      return this.editedIndex === -1 ? "Tambah Member" : "Edit Member";
     },
   },
 
   watch: {
-    dialog (val) {
-      val || this.close()
+    dialogTambah(val) {
+      val || this.closeTambah();
     },
-    dialogDelete (val) {
-      val || this.closeDelete()
+    dialogEdit(val) {
+      val || this.closeEdit();
     },
+    // dialogDelete(val) {
+    //   val || this.closeDelete();
+    // },
   },
 
-  created () {
-    this.initialize()
+  created() {
+    this.initialize();
+  },
+
+  mounted() {
+    this.getToken();
+    this.getUser();
   },
 
   methods: {
-    initialize () {
-      this.tableValues = [
-        {
-          id: '1',
-          nama: 'ayu',
-          username: 'ayu',
-        },
-        {
-          id: '1',
-          nama: 'ayu',
-          username: 'ayu',
-        },{
-          id: '1',
-          nama: 'ayu',
-          username: 'ayu',
-        },{
-          id: '1',
-          nama: 'ayu',
-          username: 'ayu',
-        },  
-      ]
-    },
-
-    editItem (item) {
-      this.editedIndex = this.tableValues.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
-    },
-
-    deleteItem (item) {
-      this.editedIndex = this.tableValues.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-
-    deleteItemConfirm () {
-      this.tableValues.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
-
-    close () {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    closeDelete () {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.tableValues[this.editedIndex], this.editedItem)
+    getToken() {
+      if (localStorage.getItem("token")) {
+        if (localStorage.getItem("role") === "admin") {
+          this.isAdmin = true;
+        } else {
+          this.notFound = true;
+        }
       } else {
-        this.tableValues.push(this.editedItem)
+        console.log("NO TOKEN");
+        this.$router.push("/");
       }
-      this.close()
     },
+    headerConfig() {
+      let header = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      };
+      return header;
+    },
+    async getUser() {
+      let url = "http://localhost:8000/api/member";
+      await this.$axios
+        .get(url, this.headerConfig())
+        .then((res) => {
+          this.data = res.data;
+          res.data.data.forEach((element) => {
+            this.tableValues.push(element);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    async update(e) {
+      e.preventDefault();
+      let data = {
+        nama_member: this.editedItem.nama_member,
+        alamat: this.editedItem.alamat,
+        jenis_kelamin: this.editedItem.jenis_kelamin,
+        telp: this.editedItem.telp,
+      };
+      await this.$axios
+        .put(
+          `http://localhost:8000/api/member/` + this.editedItem.id_member,
+          data,
+          this.headerConfig()
+        )
+        .then(() => {
+          this.closeEdit();
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    async deleteData(selected) {
+      if (window.confirm("Apakah anda yakin akan menghapus data ?")) {
+        let url = `http://localhost:8000/api/user/` + selected.id_user;
+        await this.$axios
+          .delete(url, this.headerConfig())
+          .then((res) => {
+            this.getUser();
+            window.location.reload();
+          })
+          .catch((err) => console.log(err));
+      }
+    },
+
+    async add() {
+      let url = `http://localhost:8000/api/member`;
+      let checkData = {
+        nama_member: this.editedItem.nama_member,
+        alamat: this.editedItem.alamat,
+        jenis_kelamin: this.editedItem.jenis_kelamin,
+        telp: this.editedItem.telp,
+      };
+      await this.$axios
+        .post(url, checkData, this.headerConfig())
+        .then((res) => {
+          this.getUser();
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    tambahItem() {
+      this.dialogTambah = true;
+    },
+
+    closeTambah() {
+      this.dialogTambah = false;
+    },
+
+    initialize() {},
+
+    editItem(item) {
+      this.editedIndex = this.tableValues.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      console.log(this.editedItem);
+      this.dialogEdit = true;
+    },
+
+    closeEdit() {
+      this.dialogEdit = false;
+      this.$nextTick(() => {
+        // this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedItem = Object.assign({});
+        this.editedIndex = -1;
+      });
+    },
+
+    deleteItem(item) {
+      this.editedIndex = this.tableValues.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+
+    // closeDelete() {
+    //   this.dialogDelete = false;
+    //   this.$nextTick(() => {
+    //     this.editedItem = Object.assign({}, this.defaultItem);
+    //     this.editedIndex = -1;
+    //   });
+    // },
   },
-  }
+};
 </script>
