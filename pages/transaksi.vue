@@ -45,26 +45,30 @@
       submit
     </v-btn>
   </v-form> -->
-  <p>transaksi nih</p>
+  <div>transaksi</div>
 </template>
 
 <script>
   export default {
-    // data: () => ({
-    //   valid: true,
-    //   name: '',
-    //   email: '',
-    //   select: null,
-    //   items: [
-    //     'Baru',
-    //     'Proses',
-    //     'Selesai',
-    //     'Diambil',
-    //   ],
-    // }),
-
-    // methods: {
+    data: () => ({
+      valid: true,
+      name: '',
+      email: '',
+      member:'',
+      select: null,
+      items: [
+        'Baru',
+        'Proses',
+        'Selesai',
+        'Diambil',
+      ],
+    }),
+    mounted(){
+  
+    },
+    methods: {
       
-    // },
+    
+    },
   }
 </script>

@@ -1,9 +1,22 @@
-export const getters = {
-    isAuthenticated(state) {
-      return state.auth.loggedIn
+export const state = () => ({
+    status: "",
+    token: "",
+    user: {},
+});
+export const mutations = {
+    get_token(state, token){
+        state.token = token
     },
-  
-    loggedInUser(state) {
-      return state.auth.user
-    }
-  }
+    userDetail(state, user) {
+        state.status = 'success'
+        state.user = user
+    },
+    logout(state) {
+        state.status = null
+        state.token = null
+        state.user = {}
+        localStorage.setItem('status', null)
+        localStorage.setItem('token', null)
+        localStorage.setItem('user', {})
+    },
+};

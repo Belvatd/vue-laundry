@@ -59,6 +59,8 @@ import Notification from "~/components/Notification";
 import axios from "axios";
 
 export default {
+  layout: "clear",
+
   components: {
     Notification,
   },
@@ -86,23 +88,20 @@ export default {
         this.logged = res.status;
         if (this.logged === 200) {
           this.role = res.data.data.role;
-          let token = res.data.data.token;
-          let user = res.data.data;
-          let role = res.data.data.role;
-          localStorage.setItem("user", JSON.stringify(user));
-          localStorage.setItem("token", token);
-          localStorage.setItem("role", role);
-          localStorage.setItem("reloading", true);
-            console.log(res)
+          // this.$store.commit("userDetail", res.data.data);
+          // this.$store.commit("get_token", res.data.data.token);
+          localStorage.setItem("user", JSON.stringify(res.data.data));
+          localStorage.setItem("role", res.data.data.role);
+          localStorage.setItem("token", res.data.data.token);
+          // localStorage.setItem("reloading", true);
+          // console.log(res)
 
-          if (role === "admin") {
+          if (this.role === "admin") {
             this.$router.push("/transaksi");
-            console.log(res)
-          }
-          else if(role === "kasir"){
+            console.log(res);
+          } else if (this.role === "kasir") {
             this.$router.push("/transaksi");
-          }
-          else{
+          } else {
             this.$router.push("/home-owner");
           }
         }

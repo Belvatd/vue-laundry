@@ -31,6 +31,7 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         <v-toolbar-title v-text="title" />
         <v-spacer />
+        <a href="#" @click="logout">Logout</a>
       </v-app-bar>
     </div>
 
@@ -97,6 +98,7 @@
       </v-navigation-drawer>
       <v-app-bar :clipped-left="clipped" fixed app>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+        <a href="#" @click="logout">Logout</a>
         <v-toolbar-title v-text="title" />
         <v-spacer />
       </v-app-bar>
@@ -115,7 +117,7 @@
 
 <script>
 export default {
-  name: "DefaultLayout",
+  // name: "DefaultLayout",
   data() {
     return {
       clipped: false,
@@ -170,7 +172,7 @@ export default {
           to: "/list-owner",
         },
       ],
-      itemsOwner:[
+      itemsOwner: [
         {
           icon: "mdi-accounts-bubble",
           title: "Dashboard",
@@ -180,7 +182,7 @@ export default {
           icon: "mdi-accounts-bubble",
           title: "Transaksi",
           to: "/transaksi",
-        }
+        },
       ],
       miniVariant: false,
       right: false,
@@ -188,7 +190,7 @@ export default {
       title: "Clean Laundry",
       token: "",
       role: "",
-      reloading: false,
+      // reloading: false,
       isadmin: false,
       iskasir: false,
       isowner: false,
@@ -200,14 +202,21 @@ export default {
     // this.reloadOnce();
   },
   methods: {
+    logout() {
+      this.$router.push("/");
+      localStorage.removeItem("role");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      // window.location.reload()
+    },
     getToken() {
+      // window.location.reload();
       if (localStorage.getItem("token")) {
-        this.token = localStorage.getItem("token");
-        this.role = localStorage.getItem("role");
-        console.log("masuk nii");
-        if (this.role === "admin") {
+        // console.log(this.role);
+        if (localStorage.getItem("role") === "admin") {
           this.isadmin = true;
-        } else if (this.role === "kasir") {
+        } else if (localStorage.getItem("role") === "kasir") {
           this.iskasir = true;
         } else {
           this.isowner = true;
