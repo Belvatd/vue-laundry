@@ -66,6 +66,7 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         <v-toolbar-title v-text="title" />
         <v-spacer />
+        <a href="#" @click="logout">Logout</a>
       </v-app-bar>
     </div>
 
@@ -101,6 +102,7 @@
         <a href="#" @click="logout">Logout</a>
         <v-toolbar-title v-text="title" />
         <v-spacer />
+        <a href="#" @click="logout">Logout</a>
       </v-app-bar>
     </div>
 

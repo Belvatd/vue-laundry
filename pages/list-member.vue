@@ -247,7 +247,7 @@ export default {
 
     async deleteData(selected) {
       if (window.confirm("Apakah anda yakin akan menghapus data ?")) {
-        let url = `http://localhost:8000/api/user/` + selected.id_user;
+        let url = `http://localhost:8000/api/member/` + selected.id_member;
         await this.$axios
           .delete(url, this.headerConfig())
           .then((res) => {
