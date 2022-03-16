@@ -9,11 +9,11 @@
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Daftar Member</v-toolbar-title>
+            <v-toolbar-title>Daftar Paket</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-btn color="primary" dark class="mb-2" @click="tambahItem()">
-              Tambah Member
+              Tambah Paket
             </v-btn>
             <!-- MODAL TAMBAH -->
             <v-dialog v-model="dialogTambah" max-width="500px">
@@ -135,7 +135,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Tambah Member" : "Edit Member";
+      return this.editedIndex === -1 ? "Tambah Paket" : "Edit Paket";
     },
   },
 

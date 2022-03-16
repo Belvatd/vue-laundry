@@ -90,7 +90,7 @@ export default {
           this.role = res.data.data.role;
           // this.$store.commit("userDetail", res.data.data);
           // this.$store.commit("get_token", res.data.data.token);
-          localStorage.setItem("user", JSON.stringify(res.data.data));
+          localStorage.setItem("id_user", res.data.data.id_user);
           localStorage.setItem("role", res.data.data.role);
           localStorage.setItem("token", res.data.data.token);
           // localStorage.setItem("reloading", true);

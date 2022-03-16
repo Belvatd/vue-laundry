@@ -25,29 +25,19 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.nama_user"
-                          label="Nama"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.username"
-                          label="Username"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
                         <v-select
-                          :items="role"
-                          v-model="editedItem.role"
-                          label="Role"
+                          :items="jobTitles"
+                          v-model="editedItem.id_user"
+                          item-text="nama_user"
+                          item-value="id_user"
+                          label="Owner"
                         >
                         </v-select>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.password"
-                          label="Password"
+                          v-model="editedItem.alamat"
+                          label="Alamat"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -73,29 +63,19 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.nama_user"
-                          label="Nama"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.username"
-                          label="Username"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
                         <v-select
-                          :items="role"
-                          v-model="editedItem.role"
-                          label="Role"
+                          :items="jobTitles"
+                          v-model="editedItem.id_user"
+                          item-text="nama_user"
+                          item-value="id_user"
+                          label="Owner"
                         >
                         </v-select>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.password"
-                          label="Password"
+                          v-model="editedItem.alamat"
+                          label="Alamat"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -145,22 +125,21 @@ export default {
         value: "id_outlet",
       },
       { text: "Alamat", value: "alamat", align: "start" },
-      { text: "ID User", value: "id_user" },
+      { text: "Owner", value: "nama_user" },
       { text: "Actions", value: "actions", sortable: false },
     ],
     tableValues: [],
     editedIndex: -1,
     editedItem: {
-      nama_user: "",
-      username: "",
-      password: "",
-      role: "",
+      id_user: "",
+      alamat: "",
     },
     isAdmin: false,
     notFound: false,
-    data: {},
     token: "",
     actions: "",
+    jobTitles: [],
+    selectedJobTitle: null,
   }),
 
   computed: {
@@ -185,6 +164,8 @@ export default {
   mounted() {
     this.getToken();
     this.getUser();
+    this.getOwner();
+    // console.log(this.selectedJobTitle);
   },
 
   methods: {
@@ -211,9 +192,31 @@ export default {
       await this.$axios
         .get(url, this.headerConfig())
         .then((res) => {
-          this.data = res.data;
+          this.tableValues = res.data.data.map((val) => ({
+            id_user: val.id_user,
+            id_outlet: val.id_outlet,
+            nama_user: val.user.nama_user,
+            alamat: val.alamat,
+          }));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    async getOwner() {
+      let url = "http://localhost:8000/api/user";
+      await this.$axios
+        .get(url, this.headerConfig())
+        .then((res) => {
           res.data.data.forEach((element) => {
-            this.tableValues.push(element);
+            if (element.role == "owner") {
+              try {
+                console.log(element);
+                this.jobTitles.push(element);
+              } catch (error) {
+                console.log(error);
+              }
+            }
           });
         })
         .catch((err) => {
@@ -223,14 +226,12 @@ export default {
     async update(e) {
       e.preventDefault();
       let data = {
-        nama_user: this.editedItem.nama_user,
-        username: this.editedItem.username,
-        role: this.editedItem.role,
-        password: this.editedItem.password,
+        id_user: this.editedItem.id_user,
+        alamat: this.editedItem.alamat,
       };
       await this.$axios
         .put(
-          `http://localhost:8000/api/user/` + this.editedItem.id_user,
+          `http://localhost:8000/api/outlet/` + this.editedItem.id_outlet,
           data,
           this.headerConfig()
         )
@@ -245,7 +246,7 @@ export default {
 
     async deleteData(selected) {
       if (window.confirm("Apakah anda yakin akan menghapus data ?")) {
-        let url = `http://localhost:8000/api/user/` + selected.id_user;
+        let url = `http://localhost:8000/api/outlet/` + selected.id_outlet;
         await this.$axios
           .delete(url, this.headerConfig())
           .then((res) => {
@@ -257,12 +258,10 @@ export default {
     },
 
     async add() {
-      let url = `http://localhost:8000/api/user`;
+      let url = `http://localhost:8000/api/outlet`;
       let checkData = {
-        nama_user: this.editedItem.nama_user,
-        username: this.editedItem.username,
-        password: this.editedItem.password,
-        role: this.editedItem.role,
+        id_user: this.editedItem.id_user,
+        alamat: this.editedItem.alamat,
       };
       await this.$axios
         .post(url, checkData, this.headerConfig())
@@ -287,7 +286,8 @@ export default {
     editItem(item) {
       this.editedIndex = this.tableValues.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      console.log(this.editedItem);
+      // this.selectedJobTitle = item.id_user;
+      console.log(item);
       this.dialogEdit = true;
     },
 
