@@ -31,7 +31,7 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         <v-toolbar-title v-text="title" />
         <v-spacer />
-        <a href="#" @click="logout">Logout</a>
+        <v-btn class="mr-4 primary" @click="logout"> Logout </v-btn>
       </v-app-bar>
     </div>
 
@@ -66,7 +66,7 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         <v-toolbar-title v-text="title" />
         <v-spacer />
-        <a href="#" @click="logout">Logout</a>
+        <v-btn class="mr-4 primary" @click="logout"> Logout </v-btn>
       </v-app-bar>
     </div>
 
@@ -99,10 +99,9 @@
       </v-navigation-drawer>
       <v-app-bar :clipped-left="clipped" fixed app>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-        <a href="#" @click="logout">Logout</a>
         <v-toolbar-title v-text="title" />
         <v-spacer />
-        <a href="#" @click="logout">Logout</a>
+        <v-btn class="mr-4 primary" @click="logout"> Logout </v-btn>
       </v-app-bar>
     </div>
 
