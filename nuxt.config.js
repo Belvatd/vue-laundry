@@ -15,7 +15,8 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css' }
     ]
   },
 
@@ -43,8 +44,8 @@ export default {
     '@nuxtjs/auth-next'
   ],
 
-  axios:{
-    baseURL:'http://localhost:5000'
+  axios: {
+    baseURL: 'http://localhost:5000'
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
