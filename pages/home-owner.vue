@@ -27,18 +27,23 @@
       <!-- Modal Info -->
       <v-dialog v-model="dialogInfo" max-width="500px">
         <v-card>
-          <v-card-title>
-            <span class="text-h5">Info Pembayaran</span>
-          </v-card-title>
-          <span class="infoTransaksi"
-            >ID Outlet: {{ editedItem.id_outlet }}</span
-          ><br />
-          <span class="infoTransaksi">Alamat: {{ editedItem.alamat }}</span
-          ><br />
-          <span class="infoTransaksi"
-            >Jumlah transaksi: {{ editedItem.jumlahTransaksi }}</span
-          ><br />
+          <div id="print">
+            <v-card-title>
+              <span class="text-h5">Info Pembayaran</span>
+            </v-card-title>
+            <span class="infoTransaksi"
+              >ID Outlet: {{ editedItem.id_outlet }}</span
+            ><br />
+            <span class="infoTransaksi">Alamat: {{ editedItem.alamat }}</span
+            ><br />
+            <span class="infoTransaksi"
+              >Jumlah transaksi: {{ editedItem.jumlahTransaksi }}</span
+            ><br />
+          </div>
           <v-card-actions>
+            <v-btn color="blue darken-1" class="white--text" @click="print"
+              >Print</v-btn
+            >
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="closeModal">Tutup</v-btn>
           </v-card-actions>
@@ -111,6 +116,36 @@ export default {
   },
 
   methods: {
+    print() {
+      // Get HTML to print from element
+      const prtHtml = document.getElementById("print").innerHTML;
+
+      // Get all stylesheets HTML
+      let stylesHtml = "";
+      for (const node of [
+        ...document.querySelectorAll('link[rel="stylesheet"], style'),
+      ]) {
+        stylesHtml += node.outerHTML;
+      }
+
+      // Open the print window
+      const WinPrint = window.open("", "", "toolbar=0,scrollbars=0,status=0");
+
+      WinPrint.document.write(`<!DOCTYPE html>
+<html>
+  <head>
+    ${stylesHtml}
+  </head>
+  <body>
+    ${prtHtml}
+  </body>
+</html>`);
+
+      WinPrint.document.close();
+      WinPrint.focus();
+      WinPrint.print();
+      WinPrint.close();
+    },
     getToken() {
       if (localStorage.getItem("token")) {
         if (localStorage.getItem("role") === "owner") {

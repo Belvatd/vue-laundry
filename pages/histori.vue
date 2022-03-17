@@ -51,44 +51,54 @@
       <!-- Modal Info Pembayaran -->
       <v-dialog v-model="dialogPembayaran" max-width="500px">
         <v-card>
-          <v-card-title>
-            <span class="text-h5">Info Pembayaran</span>
-          </v-card-title>
-          <span class="infoTransaksi"
-            >ID Transaksi: {{ infoTransaksi.id_transaksi }}</span
-          ><br />
-          <span class="infoTransaksi"
-            >Tanggal pemesanan: {{ infoTransaksi.tanggalPesanan }}</span
-          ><br />
-          <span class="infoTransaksi"
-            >Batas waktu pembayaran: {{ infoTransaksi.batasWaktu }}</span
-          ><br />
-          <span class="infoTransaksi"
-            >Tanggal Pembayaran: {{ infoTransaksi.tanggalDibayar }}</span
-          ><br />
-          <span class="infoTransaksi"
-            >Alamat outlet: {{ infoTransaksi.alamat }}</span
-          ><br />
-          <span class="infoTransaksi">Member: {{ infoTransaksi.member }}</span
-          ><br />
-          <span class="infoTransaksi">Petugas: {{ infoTransaksi.petugas }}</span
-          ><br />
-          <span class="infoTransaksi">Paket: {{ infoTransaksi.paket }}</span
-          ><br />
-          <span class="infoTransaksi">Harga: {{ infoTransaksi.harga }}</span
-          ><br />
-          <span class="infoTransaksi"
-            >Kuantitas: {{ infoTransaksi.kuantitas }}</span
-          ><br />
-          <span class="infoTransaksi"
-            >Total Bayar: {{ infoTransaksi.totalBayar }}</span
-          ><br />
+          <div id="print">
+            <v-card-title>
+              <span class="text-h5">Info Pembayaran</span>
+            </v-card-title>
+            <span class="infoTransaksi"
+              >ID Transaksi: {{ infoTransaksi.id_transaksi }}</span
+            ><br />
+            <span class="infoTransaksi"
+              >Tanggal pemesanan: {{ infoTransaksi.tanggalPesanan }}</span
+            ><br />
+            <span class="infoTransaksi"
+              >Batas waktu pembayaran: {{ infoTransaksi.batasWaktu }}</span
+            ><br />
+            <span class="infoTransaksi"
+              >Tanggal Pembayaran: {{ infoTransaksi.tanggalDibayar }}</span
+            ><br />
+            <span class="infoTransaksi"
+              >Alamat outlet: {{ infoTransaksi.alamat }}</span
+            ><br />
+            <span class="infoTransaksi">Member: {{ infoTransaksi.member }}</span
+            ><br />
+            <span class="infoTransaksi"
+              >Petugas: {{ infoTransaksi.petugas }}</span
+            ><br />
+            <span class="infoTransaksi">Paket: {{ infoTransaksi.paket }}</span
+            ><br />
+            <span class="infoTransaksi">Harga: {{ infoTransaksi.harga }}</span
+            ><br />
+            <span class="infoTransaksi"
+              >Kuantitas: {{ infoTransaksi.kuantitas }}</span
+            ><br />
+            <span class="infoTransaksi"
+              >Total Bayar: {{ infoTransaksi.totalBayar }}</span
+            ><br />
+          </div>
           <v-card-actions>
+            <v-btn color="blue darken-1" class="white--text" @click="print">Print</v-btn>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="closeEdit">Tutup</v-btn>
-            <v-btn color="blue darken-1" text @click="bayar" v-if="belumdibayar"
-              >Bayar</v-btn
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="bayar"
+              v-if="belumdibayar"
             >
+              Bayar
+            </v-btn>
+            <div v-else></div>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -173,6 +183,36 @@ export default {
   },
 
   methods: {
+    print() {
+      // Get HTML to print from element
+      const prtHtml = document.getElementById("print").innerHTML;
+
+      // Get all stylesheets HTML
+      let stylesHtml = "";
+      for (const node of [
+        ...document.querySelectorAll('link[rel="stylesheet"], style'),
+      ]) {
+        stylesHtml += node.outerHTML;
+      }
+
+      // Open the print window
+      const WinPrint = window.open("", "", "toolbar=0,scrollbars=0,status=0");
+
+      WinPrint.document.write(`<!DOCTYPE html>
+<html>
+  <head>
+    ${stylesHtml}
+  </head>
+  <body>
+    ${prtHtml}
+  </body>
+</html>`);
+
+      WinPrint.document.close();
+      WinPrint.focus();
+      WinPrint.print();
+      WinPrint.close();
+    },
     getToken() {
       if (localStorage.getItem("token")) {
         if (
@@ -231,6 +271,12 @@ export default {
           this.infoTransaksi.tanggalDibayar =
             res.data.data.tgl_bayar || "Belum dibayar";
           this.infoTransaksi.batasWaktu = res.data.data.batas_waktu;
+          // eslint-disable-next-line
+          if (this.infoTransaksi.tanggalDibayar != "Belum dibayar") {
+            this.belumdibayar = false;
+          } else {
+            this.belumdibayar = true;
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -286,9 +332,6 @@ export default {
       this.editedItem = Object.assign({}, item);
       this.getDetailTransaksi(this.editedItem.id_transaksi);
       this.dialogPembayaran = true;
-      if (this.infoTransaksi.tanggalDibayar === "Belum dibayar") {
-        this.belumdibayar = true;
-      }
     },
 
     closeEdit() {
