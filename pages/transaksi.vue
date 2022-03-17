@@ -194,7 +194,10 @@ export default {
         this.editedItem.id_transaksi;
       await this.$axios
         .put(url, {}, this.headerConfig())
-        .then(this.closeModal())
+        .then(() => {
+          this.closeModal();
+          window.location.reload();
+        })
         .catch((err) => {
           console.log(err);
         });

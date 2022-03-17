@@ -53,48 +53,44 @@
           <v-card-title>
             <span class="text-h5">Info Pembayaran</span>
           </v-card-title>
-          <span class="text-h5">Total Harga: Rp{{ editedItem.totalBayar }}</span>
-
-          <!-- <v-card-text>
-            <v-col cols="12" sm="6" md="4">
-              <v-select
-                :items="status"
-                v-model="editedItem.status"
-                label="Status Pesanan"
-              >
-              </v-select>
-            </v-col>
-          </v-card-text> -->
-          <v-text-field v-model="totalBayar" label="" required></v-text-field>
+          <span class="infoTransaksi"
+            >ID Transaksi: {{ infoTransaksi.id_transaksi }}</span
+          ><br />
+          <span class="infoTransaksi"
+            >Tanggal pemesanan: {{ infoTransaksi.tanggalPesanan }}</span
+          ><br />
+          <span class="infoTransaksi"
+            >Batas waktu pembayaran: {{ infoTransaksi.batasWaktu }}</span
+          ><br />
+          <span class="infoTransaksi"
+            >Tanggal Pembayaran: {{ infoTransaksi.tanggalDibayar }}</span
+          ><br />
+          <span class="infoTransaksi"
+            >Alamat outlet: {{ infoTransaksi.alamat }}</span
+          ><br />
+          <span class="infoTransaksi">Member: {{ infoTransaksi.member }}</span
+          ><br />
+          <span class="infoTransaksi">Petugas: {{ infoTransaksi.petugas }}</span
+          ><br />
+          <span class="infoTransaksi">Paket: {{ infoTransaksi.paket }}</span
+          ><br />
+          <span class="infoTransaksi">Harga: {{ infoTransaksi.harga }}</span
+          ><br />
+          <span class="infoTransaksi"
+            >Kuantitas: {{ infoTransaksi.kuantitas }}</span
+          ><br />
+          <span class="infoTransaksi"
+            >Total Bayar: {{ infoTransaksi.totalBayar }}</span
+          ><br />
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="closeEdit">Tutup</v-btn>
-            <v-btn color="blue darken-1" text @click="updateStatus"
-              >Simpan</v-btn
+            <v-btn color="blue darken-1" text @click="bayar" v-if="belumdibayar"
+              >Bayar</v-btn
             >
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <!-- Modal Bayar -->
-      <!-- <v-dialog v-model="dialogPembayaran" max-width="500px">
-        <v-card>
-          <v-card-title>
-            <span class="text-h5">Pembayaran</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <span class="text-h5">Total Harga: Rp{{ totalBayar }}</span>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeModal">Tutup</v-btn>
-            <v-btn color="blue darken-1" text @click="bayar" v-if="isPaid"> Bayar </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog> -->
     </v-app>
   </div>
   <div v-else-if="notFound">
@@ -125,6 +121,19 @@ export default {
       totalBayar: "",
       status: "",
     },
+    infoTransaksi: {
+      id_transaksi: "",
+      alamat: "",
+      member: "",
+      petugas: "",
+      paket: "",
+      harga: "",
+      kuantitas: "",
+      totalBayar: "",
+      tanggalPesanan: "",
+      batasWaktu: "",
+      tanggalDibayar: "",
+    },
     status: ["baru", "diproses", "selesai"],
     isAdmin: false,
     notFound: false,
@@ -135,7 +144,7 @@ export default {
     totalBayar: "",
     dialogEdit: false,
     dialogPembayaran: false,
-    isPaid: true,
+    belumdibayar: true,
   }),
 
   computed: {
@@ -160,7 +169,6 @@ export default {
   mounted() {
     this.getToken();
     this.getUser();
-    // this.getDetailTransaksi();
   },
 
   methods: {
@@ -204,12 +212,24 @@ export default {
           console.log(err);
         });
     },
+
     async getDetailTransaksi(id) {
-      let url = `http://localhost:8000/api/transaksi/`+ id;
+      let url = `http://localhost:8000/api/transaksi/` + id;
       await this.$axios
         .get(url, this.headerConfig())
         .then((res) => {
-          this.totalBayar = res.data.data.total;
+          this.infoTransaksi.totalBayar = res.data.data.total;
+          this.infoTransaksi.id_transaksi = res.data.data.id_transaksi;
+          this.infoTransaksi.alamat = res.data.data.outlet.alamat;
+          this.infoTransaksi.member = res.data.data.member.nama_member;
+          this.infoTransaksi.petugas = res.data.data.user.nama_user;
+          this.infoTransaksi.paket = res.data.data.detail[0].paket.jenis;
+          this.infoTransaksi.harga = res.data.data.detail[0].paket.harga;
+          this.infoTransaksi.kuantitas = res.data.data.detail[0].qty;
+          this.infoTransaksi.tanggalPesanan = res.data.data.tgl_diterima;
+          this.infoTransaksi.tanggalDibayar =
+            res.data.data.tgl_bayar || "Belum dibayar";
+          this.infoTransaksi.batasWaktu = res.data.data.batas_waktu;
         })
         .catch((err) => {
           console.log(err);
@@ -243,7 +263,10 @@ export default {
         this.editedItem.id_transaksi;
       await this.$axios
         .put(url, {}, this.headerConfig())
-        .then(this.closeModal())
+        .then(() => {
+          this.closeEdit();
+          window.location.reload();
+        })
         .catch((err) => {
           console.log(err);
         });
@@ -260,14 +283,16 @@ export default {
     editBayar(item) {
       this.editedIndex = this.tableValues.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.getDetailTransaksi(this.editedItem.id_transaksi)
-      // console.log(this.editedItem.id_transaksi)
-
+      this.getDetailTransaksi(this.editedItem.id_transaksi);
       this.dialogPembayaran = true;
+      if (this.infoTransaksi.tanggalDibayar === "Belum dibayar") {
+        this.belumdibayar = true;
+      }
     },
 
     closeEdit() {
       this.dialogEdit = false;
+      this.dialogPembayaran = false;
     },
   },
 };

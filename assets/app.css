@@ -4,3 +4,9 @@
 .titlePage{
   color: #000;
 }
+
+.infoTransaksi{
+  margin-left: 25px;
+  font-size: 18px;
+  color: rgb(78, 78, 78);
+}
