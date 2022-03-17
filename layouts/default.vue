@@ -19,7 +19,7 @@
             exact
           >
             <v-list-item-action>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon color="#fff">{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="sideText" v-text="item.title" />
@@ -130,66 +130,66 @@ export default {
           to: "/transaksi",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-file-document-multiple",
           title: "Histori Transaksi",
           to: "/histori",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-account-multiple",
           title: "Daftar Member",
           to: "/list-member",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-home-city",
           title: "Daftar Outlet",
           to: "/list-outlet",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-archive",
           title: "Daftar Paket",
           to: "/list-paket",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-account-multiple",
           title: "Daftar User Admin",
           to: "/list-admin",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-account-multiple",
           title: "Daftar User Owner",
           to: "/list-owner",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-account-multiple",
           title: "Daftar User Kasir",
           to: "/list-kasir",
         },
       ],
       itemsKasir: [
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-apps",
           title: "Transaksi",
           to: "/transaksi",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-file-document-multiple",
           title: "Histori Transaksi",
           to: "/histori",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-accounts-multiple",
           title: "Daftar Member",
           to: "/list-member",
         },
       ],
       itemsOwner: [
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-home-city",
           title: "Dashboard",
           to: "/home-owner",
         },
         {
-          icon: "mdi-accounts-bubble",
+          icon: "mdi-apps",
           title: "Transaksi",
           to: "/transaksi",
         },
