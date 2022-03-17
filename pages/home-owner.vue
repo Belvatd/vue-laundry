@@ -16,9 +16,11 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small @click="infoItem(item)">
-            mdi-alert-circle-outline
-          </v-icon>
+          <v-btn color="warning">
+            <v-icon small @click="infoItem(item)">
+              mdi-alert-circle-outline
+            </v-icon>
+          </v-btn>
         </template>
         <template v-slot:no-data>
           <p>No Data</p>
@@ -41,11 +43,11 @@
             ><br />
           </div>
           <v-card-actions>
-            <v-btn color="blue darken-1" class="white--text" @click="print"
+            <v-btn color="primary" class="white--text" @click="print"
               >Print</v-btn
             >
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeModal">Tutup</v-btn>
+            <v-btn color="primary" text @click="closeModal">Tutup</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

@@ -13,12 +13,16 @@
           <p>No Data</p>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon small class="mr-2" @click="editBayar(item)">
-            mdi-alert-circle-outline
-          </v-icon>
+          <v-btn color="primary">
+            <v-icon small class="mr-2" @click="editItem(item)">
+              mdi-pencil
+            </v-icon>
+          </v-btn>
+          <v-btn color="warning">
+            <v-icon small class="mr-2" @click="editBayar(item)">
+              mdi-alert-circle-outline
+            </v-icon>
+          </v-btn>
         </template>
       </v-data-table>
 
@@ -40,10 +44,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeEdit">Tutup</v-btn>
-            <v-btn color="blue darken-1" text @click="updateStatus"
-              >Simpan</v-btn
-            >
+            <v-btn color="error" @click="closeEdit">Tutup</v-btn>
+            <v-btn color="primary" text @click="updateStatus">Simpan</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -87,15 +89,12 @@
             ><br />
           </div>
           <v-card-actions>
-            <v-btn color="blue darken-1" class="white--text" @click="print">Print</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeEdit">Tutup</v-btn>
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="bayar"
-              v-if="belumdibayar"
+            <v-btn color="primary" class="white--text" @click="print"
+              >Print</v-btn
             >
+            <v-spacer></v-spacer>
+            <v-btn color="error" @click="closeEdit">Tutup</v-btn>
+            <v-btn color="primary" @click="bayar" v-if="belumdibayar">
               Bayar
             </v-btn>
             <div v-else></div>

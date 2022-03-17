@@ -45,10 +45,8 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeTambah">
-                    Cancel
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="add"> Save </v-btn>
+                  <v-btn color="error" @click="closeTambah"> Cancel </v-btn>
+                  <v-btn color="primary" @click="add"> Save </v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -83,12 +81,8 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeEdit">
-                    Cancel
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="update">
-                    Save
-                  </v-btn>
+                  <v-btn color="error" @click="closeEdit"> Cancel </v-btn>
+                  <v-btn color="primary" @click="update"> Save </v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -96,10 +90,14 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon small @click="deleteData(item)"> mdi-delete </v-icon>
+          <v-btn color="primary">
+            <v-icon small class="mr-2" @click="editItem(item)">
+              mdi-pencil
+            </v-icon>
+          </v-btn>
+          <v-btn color="error">
+            <v-icon small @click="deleteData(item)"> mdi-delete </v-icon>
+          </v-btn>
         </template>
         <template v-slot:no-data>
           <p>No Data</p>
