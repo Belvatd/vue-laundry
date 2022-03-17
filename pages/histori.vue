@@ -1,12 +1,7 @@
 <template>
   <div id="app" v-if="isAdmin">
     <v-app id="list-admin">
-      <v-data-table
-        :headers="headers"
-        :items="items"
-        sort-by="calories"
-        class="elevation-1"
-      >
+      <v-data-table :headers="headers" :items="items" class="elevation-1">
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>Histori Transaksi</v-toolbar-title>
@@ -17,7 +12,89 @@
         <template v-slot:no-data>
           <p>No Data</p>
         </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon small class="mr-2" @click="editItem(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small class="mr-2" @click="editBayar(item)">
+            mdi-alert-circle-outline
+          </v-icon>
+        </template>
       </v-data-table>
+
+      <!-- modal edit status pesanan -->
+      <v-dialog v-model="dialogEdit" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="text-h5">Edit Status Pesanan</span>
+          </v-card-title>
+          <v-card-text>
+            <v-col cols="12" sm="6" md="4">
+              <v-select
+                :items="status"
+                v-model="editedItem.status"
+                label="Status Pesanan"
+              >
+              </v-select>
+            </v-col>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="closeEdit">Tutup</v-btn>
+            <v-btn color="blue darken-1" text @click="updateStatus"
+              >Simpan</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="dialogPembayaran" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="text-h5">Info Pembayaran</span>
+          </v-card-title>
+          <span class="text-h5">Total Harga: Rp{{ editedItem.totalBayar }}</span>
+
+          <!-- <v-card-text>
+            <v-col cols="12" sm="6" md="4">
+              <v-select
+                :items="status"
+                v-model="editedItem.status"
+                label="Status Pesanan"
+              >
+              </v-select>
+            </v-col>
+          </v-card-text> -->
+          <v-text-field v-model="totalBayar" label="" required></v-text-field>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="closeEdit">Tutup</v-btn>
+            <v-btn color="blue darken-1" text @click="updateStatus"
+              >Simpan</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- Modal Bayar -->
+      <!-- <v-dialog v-model="dialogPembayaran" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="text-h5">Pembayaran</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <span class="text-h5">Total Harga: Rp{{ totalBayar }}</span>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="closeModal">Tutup</v-btn>
+            <v-btn color="blue darken-1" text @click="bayar" v-if="isPaid"> Bayar </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog> -->
     </v-app>
   </div>
   <div v-else-if="notFound">
@@ -38,19 +115,27 @@ export default {
       { text: "Petugas", value: "nama_user" },
       { text: "Batas Waktu", value: "batas_waktu" },
       { text: "Tanggal Bayar", value: "tgl_bayar" },
+      { text: "Status", value: "status" },
+      { text: "Actions", value: "actions" },
     ],
     tableValues: [],
     editedIndex: -1,
     editedItem: {
-      jenis: "",
-      harga: "",
+      id_transaksi: "",
+      totalBayar: "",
+      status: "",
     },
+    status: ["baru", "diproses", "selesai"],
     isAdmin: false,
     notFound: false,
     data: {},
     token: "",
     actions: "",
     items: [],
+    totalBayar: "",
+    dialogEdit: false,
+    dialogPembayaran: false,
+    isPaid: true,
   }),
 
   computed: {
@@ -75,6 +160,7 @@ export default {
   mounted() {
     this.getToken();
     this.getUser();
+    // this.getDetailTransaksi();
   },
 
   methods: {
@@ -111,22 +197,34 @@ export default {
             alamat: val.outlet.alamat,
             batas_waktu: val.batas_waktu,
             tgl_bayar: val.tgl_bayar,
+            status: val.status,
           }));
         })
         .catch((err) => {
           console.log(err);
         });
     },
+    async getDetailTransaksi(id) {
+      let url = `http://localhost:8000/api/transaksi/`+ id;
+      await this.$axios
+        .get(url, this.headerConfig())
+        .then((res) => {
+          this.totalBayar = res.data.data.total;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
 
-    async update(e) {
+    async updateStatus(e) {
       e.preventDefault();
       let data = {
-        jenis: this.editedItem.jenis,
-        harga: this.editedItem.harga,
+        status: this.editedItem.status,
       };
       await this.$axios
         .put(
-          `http://localhost:8000/api/paket/` + this.editedItem.id_paket,
+          `http://localhost:8000/api/transaksi/status/` +
+            this.editedItem.id_transaksi,
           data,
           this.headerConfig()
         )
@@ -139,28 +237,16 @@ export default {
         });
     },
 
-    async add() {
-      let url = `http://localhost:8000/api/paket`;
-      let checkData = {
-        jenis: this.editedItem.jenis,
-        harga: this.editedItem.harga,
-      };
+    async bayar() {
+      let url =
+        `http://localhost:8000/api/transaksi/bayar/` +
+        this.editedItem.id_transaksi;
       await this.$axios
-        .post(url, checkData, this.headerConfig())
-        .then((res) => {
-          this.getUser();
-          window.location.reload();
-        })
+        .put(url, {}, this.headerConfig())
+        .then(this.closeModal())
         .catch((err) => {
           console.log(err);
         });
-    },
-    tambahItem() {
-      this.dialogTambah = true;
-    },
-
-    closeTambah() {
-      this.dialogTambah = false;
     },
 
     initialize() {},
@@ -168,22 +254,20 @@ export default {
     editItem(item) {
       this.editedIndex = this.tableValues.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      console.log(this.editedItem);
       this.dialogEdit = true;
+    },
+
+    editBayar(item) {
+      this.editedIndex = this.tableValues.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.getDetailTransaksi(this.editedItem.id_transaksi)
+      // console.log(this.editedItem.id_transaksi)
+
+      this.dialogPembayaran = true;
     },
 
     closeEdit() {
       this.dialogEdit = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({});
-        this.editedIndex = -1;
-      });
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.tableValues.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
     },
   },
 };

@@ -1,60 +1,68 @@
 <template>
-  <v-form ref="form">
-    <br />
-    <h2 class="titlePage">Tambah Transaksi</h2>
-    <br />
+  <div>
+    <v-form ref="form">
+      <br />
+      <h2 class="titlePage">Tambah Transaksi</h2>
+      <br />
 
-    <v-select
-      label="Member"
-      :items="member"
-      item-value="id_member"
-      item-text="nama_member"
-      v-model="editedItem.id_member"
-    >
-    </v-select>
+      <v-select
+        label="Member"
+        :items="member"
+        item-value="id_member"
+        item-text="nama_member"
+        v-model="editedItem.id_member"
+      >
+      </v-select>
 
-    <v-text-field
-      v-model="user.nama_user"
-      
-      label="Petugas"
-      required
-    ></v-text-field>
+      <v-text-field
+        v-model="user.nama_user"
+        label="Petugas"
+        disabled
+      ></v-text-field>
 
-    <v-select
-      label="Outlet"
-      :items="outlet"
-      item-text="alamat"
-      item-value="id_outlet"
-      v-model="editedItem.id_outlet"
+      <v-select
+        label="Outlet"
+        :items="outlet"
+        item-text="alamat"
+        item-value="id_outlet"
+        v-model="editedItem.id_outlet"
+      >
+      </v-select>
+      <v-select
+        label="Daftar Paket"
+        :items="paket"
+        item-value="id_paket"
+        item-text="jenis"
+        v-model="editedItem.id_paket"
+      >
+      </v-select>
 
-    >
-    </v-select>
-    <v-select
-      label="Daftar Paket"
-      :items="paket"
-      item-value="id_paket"
-      item-text="jenis"
-      v-model="editedItem.id_paket"
+      <v-text-field v-model="qty" label="Banyak (Kg)" required></v-text-field>
+      <br />
+      <v-btn class="mr-4 primary" @click="submit"> submit </v-btn>
+    </v-form>
 
-    >
-    </v-select>
-
-    <v-text-field v-model="qty" label="Banyak (Kg)" required></v-text-field>
-
-    <!-- <v-text-field v-model="tanggal" label="Tanggal" required></v-text-field> -->
-
-    <!-- <v-text-field v-model="batas" label="Batas" required></v-text-field> -->
-
-    <!-- <v-select
-      v-model="select"
-      :items="items"
-      :rules="[(v) => !!v || 'Item is required']"
-      label="Status"
-      required
-    ></v-select> -->
-    <br />
-    <v-btn class="mr-4 primary" @click="submit"> submit </v-btn>
-  </v-form>
+    <!-- Modal Bayar -->
+    <v-dialog v-model="dialogPembayaran" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">Pembayaran</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <span class="text-h5">Total Harga: Rp{{ totalBayar }}</span>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeModal">Tutup</v-btn>
+          <v-btn color="blue darken-1" text @click="bayar"> Bayar </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -75,10 +83,11 @@ export default {
       id_member: "",
       id_outlet: "",
       id_paket: "",
+      id_transaksi: "",
     },
     qty: 0,
-    // select: null,
-    // items: ["Baru", "Proses", "Selesai", "Diambil"],
+    totalBayar: "",
+    dialogPembayaran: false,
   }),
   mounted() {
     this.getMember();
@@ -112,8 +121,6 @@ export default {
           res.data.data.forEach((element) => {
             if (element.id_user == localStorage.getItem("id_user")) {
               try {
-                // this.user = element.nama_user
-                // this.user.push(element);
                 this.user.id_user = element.id_user;
                 this.user.nama_user = element.nama_user;
                 console.log(element.nama_user);
@@ -155,25 +162,45 @@ export default {
           console.log(err);
         });
     },
+
     async submit() {
       let url = "http://localhost:8000/api/transaksi";
       let data = {
         id_member: this.editedItem.id_member,
         id_user: parseInt(localStorage.getItem("id_user")),
         id_outlet: this.editedItem.id_outlet,
-        list_paket: [{
-          id_paket: this.editedItem.id_paket,
-          qty: this.qty,
-        }],
+        list_paket: [
+          {
+            id_paket: this.editedItem.id_paket,
+            qty: this.qty,
+          },
+        ],
       };
       await this.$axios
         .post(url, data, this.headerConfig())
         .then((res) => {
           console.log(res);
+          this.totalBayar = res.data.data.total;
+          this.editedItem.id_transaksi = res.data.data.id_transaksi;
+          this.dialogPembayaran = true;
         })
         .catch((err) => {
           console.log(err);
         });
+    },
+    async bayar() {
+      let url =
+        `http://localhost:8000/api/transaksi/bayar/` +
+        this.editedItem.id_transaksi;
+      await this.$axios
+        .put(url, {}, this.headerConfig())
+        .then(this.closeModal())
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    closeModal() {
+      this.dialogPembayaran = false;
     },
   },
 };
