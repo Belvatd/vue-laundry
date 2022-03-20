@@ -198,7 +198,7 @@ export default {
       miniVariant: false,
       right: false,
       rightDrawer: false,
-      title: "Clean Laundry",
+      title: "Clean n Fresh",
       token: "",
       role: "",
       isadmin: false,
