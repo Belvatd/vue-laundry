@@ -23,43 +23,39 @@
                 </v-card-title>
                 <v-card-text>
                   <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.nama_user"
-                          label="Nama"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.username"
-                          label="Username"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          :items="role"
-                          v-model="editedItem.role"
-                          label="Role"
-                        >
-                        </v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.password"
-                          label="Password"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.nama_user"
+                        label="Nama"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.username"
+                        label="Username"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-select
+                        :items="role"
+                        v-model="editedItem.role"
+                        label="Role"
+                      >
+                      </v-select>
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.password"
+                        label="Password"
+                      ></v-text-field>
+                    </v-col>
                   </v-container>
                 </v-card-text>
-                <v-card-actions>
+                <div class="actionModal">
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeTambah">
-                    Cancel
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="add"> Save </v-btn>
-                </v-card-actions>
+                  <v-btn color="error" text @click="closeTambah"> Tutup </v-btn>
+                  <v-btn color="primary" text @click="add"> Simpan </v-btn>
+                </div>
               </v-card>
             </v-dialog>
 
@@ -71,55 +67,50 @@
                 </v-card-title>
                 <v-card-text>
                   <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.nama_user"
-                          label="Nama"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.username"
-                          label="Username"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          :items="role"
-                          v-model="editedItem.role"
-                          label="Role"
-                        >
-                        </v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.password"
-                          label="Password"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.nama_user"
+                        label="Nama"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.username"
+                        label="Username"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-select
+                        :items="role"
+                        v-model="editedItem.role"
+                        label="Role"
+                      >
+                      </v-select>
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.password"
+                        label="Password"
+                        type="password"
+                      ></v-text-field>
+                    </v-col>
                   </v-container>
                 </v-card-text>
-                <v-card-actions>
+                <div class="actionModal">
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeEdit">
-                    Cancel
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="update">
-                    Save
-                  </v-btn>
-                </v-card-actions>
+                  <v-btn color="error" text @click="closeEdit"> Tutup </v-btn>
+                  <v-btn color="primary" text @click="update"> Simpan </v-btn>
+                </div>
               </v-card>
             </v-dialog>
           </v-toolbar>
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">
+          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
             mdi-pencil
           </v-icon>
-          <v-icon small @click="deleteData(item)"> mdi-delete </v-icon>
+          <v-icon color="error" small @click="deleteData(item)"> mdi-delete </v-icon>
         </template>
         <template v-slot:no-data>
           <p>No Data</p>

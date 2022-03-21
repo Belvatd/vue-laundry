@@ -16,7 +16,7 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small @click="infoItem(item)">
+          <v-icon color="warning" small @click="infoItem(item)">
             mdi-alert-circle-outline
           </v-icon>
         </template>
@@ -40,13 +40,13 @@
               >Jumlah transaksi: {{ editedItem.jumlahTransaksi }}</span
             ><br />
           </div>
-          <v-card-actions>
-            <v-btn color="blue darken-1" class="white--text" @click="print"
+          <div class="actionModal">
+            <v-btn color="primary" class="white--text" @click="print"
               >Print</v-btn
             >
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeModal">Tutup</v-btn>
-          </v-card-actions>
+            <v-btn color="primary" @click="closeModal">Tutup</v-btn>
+          </div>
         </v-card>
       </v-dialog>
     </v-app>
