@@ -71,16 +71,12 @@ export default {
         this.logged = res.status;
         if (this.logged === 200) {
           this.role = res.data.data.role;
-          // this.$store.commit("userDetail", res.data.data);
-          // this.$store.commit("get_token", res.data.data.token);
           localStorage.setItem("id_user", res.data.data.id_user);
           localStorage.setItem("role", res.data.data.role);
           localStorage.setItem("token", res.data.data.token);
-          // localStorage.setItem("reloading", true);
-          // console.log(res)
 
           if (this.role === "admin") {
-            this.$router.push("/transaksi");
+            this.$router.push("/dashboard-admin");
             console.log(res);
           } else if (this.role === "kasir") {
             this.$router.push("/transaksi");
