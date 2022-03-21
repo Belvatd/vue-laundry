@@ -3,24 +3,36 @@
     <div v-if="isadmin">
       <v-navigation-drawer
         v-if="isadmin"
-        class="primary"
+        class="sideBar"
         v-model="drawer"
         :mini-variant="miniVariant"
         :clipped="clipped"
         fixed
         app
-        src="https://images.unsplash.com/photo-1569982175971-d92b01cf8694?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80"
       >
-        <v-list>
+        <template v-slot:prepend>
+          <v-list-item two-line>
+            <v-list-item-avatar>
+              <img src="https://randomuser.me/api/portraits/women/81.jpg" />
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <p class="nameProfil">{{ user.nama_user }}</p>
+              <p class="nameProfilr">Logged In</p>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+
+        <v-divider></v-divider>
+        <v-list dense>
           <v-list-item
             v-for="(item, i) in itemsAdmin"
             :key="i"
             :to="item.to"
             router
-            exact
           >
             <v-list-item-action>
-              <v-icon color="#fff">{{ item.icon }}</v-icon>
+              <v-icon color="#">{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="sideText" v-text="item.title" />
@@ -28,26 +40,47 @@
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-app-bar :clipped-left="clipped" fixed app>
+      <v-app-bar flat :clipped-left="clipped" fixed app>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-        <v-toolbar-title v-text="title" />
+        <img
+          class="logo"
+          src="https://drive.google.com/uc?id=1tm1FtY1BlDm7q89q3c4MyS1orNRUwfAs"
+        />
         <v-spacer />
-        <v-btn class="mr-4 primary" @click="logout"> Logout </v-btn>
+        <div class="badge">{{ user.role }}</div>
+        <button @click="logout">
+          <img
+            src="https://drive.google.com/uc?id=1TcDvcxR6a1nNn691Cp8wTov06gOxRlRf"
+            alt=""
+          />
+        </button>
       </v-app-bar>
     </div>
 
     <div v-else-if="iskasir">
       <v-navigation-drawer
         v-if="iskasir"
-        class="primary"
+        class="sideBar"
         v-model="drawer"
         :mini-variant="miniVariant"
         :clipped="clipped"
         fixed
         app
-        src="https://images.unsplash.com/photo-1569982175971-d92b01cf8694?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80"
       >
-        <v-list>
+        <template v-slot:prepend>
+          <v-list-item two-line>
+            <v-list-item-avatar>
+              <img src="https://randomuser.me/api/portraits/women/81.jpg" />
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <p class="nameProfil">{{ user.nama_user }}</p>
+              <p class="nameProfilr">Logged In</p>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+        <v-divider></v-divider>
+        <v-list dense>
           <v-list-item
             v-for="(item, i) in itemsKasir"
             :key="i"
@@ -56,7 +89,7 @@
             exact
           >
             <v-list-item-action>
-              <v-icon color="#fff">{{ item.icon }}</v-icon>
+              <v-icon color="#">{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="sideText" v-text="item.title" />
@@ -66,24 +99,44 @@
       </v-navigation-drawer>
       <v-app-bar :clipped-left="clipped" fixed app>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-        <v-toolbar-title v-text="title" />
+        <img
+          class="logo"
+          src="https://drive.google.com/uc?id=1tm1FtY1BlDm7q89q3c4MyS1orNRUwfAs"
+        />
         <v-spacer />
-        <v-btn class="mr-4 primary" @click="logout"> Logout </v-btn>
+        <div class="badge">{{ user.role }}</div>
+        <button @click="logout">
+          <img
+            src="https://drive.google.com/uc?id=1TcDvcxR6a1nNn691Cp8wTov06gOxRlRf"
+            alt=""
+          />
+        </button>
       </v-app-bar>
     </div>
 
     <div v-else-if="isowner">
       <v-navigation-drawer
         v-if="isowner"
-        class="primary"
+        class="sideBar"
         v-model="drawer"
         :mini-variant="miniVariant"
         :clipped="clipped"
         fixed
         app
-        src="https://images.unsplash.com/photo-1569982175971-d92b01cf8694?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80"
       >
-        <v-list>
+        <template v-slot:prepend>
+          <v-list-item two-line>
+            <v-list-item-avatar>
+              <img src="https://randomuser.me/api/portraits/women/81.jpg" />
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <p class="nameProfil">{{ user.nama_user }}</p>
+              <p class="nameProfilr">Logged In</p>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+        <v-list dense>
           <v-list-item
             v-for="(item, i) in itemsOwner"
             :key="i"
@@ -92,7 +145,7 @@
             exact
           >
             <v-list-item-action>
-              <v-icon color="#fff">{{ item.icon }}</v-icon>
+              <v-icon color="#">{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="sideText" v-text="item.title" />
@@ -102,9 +155,18 @@
       </v-navigation-drawer>
       <v-app-bar :clipped-left="clipped" fixed app>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-        <v-toolbar-title v-text="title" />
+        <img
+          class="logo"
+          src="https://drive.google.com/uc?id=1tm1FtY1BlDm7q89q3c4MyS1orNRUwfAs"
+        />
         <v-spacer />
-        <v-btn class="mr-4 primary" @click="logout"> Logout </v-btn>
+        <div class="badge">{{ user.role }}</div>
+        <button @click="logout">
+          <img
+            src="https://drive.google.com/uc?id=1TcDvcxR6a1nNn691Cp8wTov06gOxRlRf"
+            alt=""
+          />
+        </button>
       </v-app-bar>
     </div>
 
@@ -127,6 +189,11 @@ export default {
       drawer: false,
       fixed: false,
       itemsAdmin: [
+        {
+          icon: "mdi-home-city",
+          title: "Dashboard",
+          to: "/dashboard-admin",
+        },
         {
           icon: "mdi-apps",
           title: "Transaksi",
@@ -180,7 +247,7 @@ export default {
           to: "/histori",
         },
         {
-          icon: "mdi-accounts-multiple",
+          icon: "mdi-account-multiple",
           title: "Daftar Member",
           to: "/list-member",
         },
@@ -191,26 +258,31 @@ export default {
           title: "Dashboard",
           to: "/home-owner",
         },
-        {
-          icon: "mdi-apps",
-          title: "Transaksi",
-          to: "/transaksi",
-        },
       ],
       miniVariant: false,
       right: false,
       rightDrawer: false,
-      title: "Clean n Fresh",
       token: "",
       role: "",
       isadmin: false,
       iskasir: false,
       isowner: false,
+      user: [
+        {
+          id_user: "",
+          nama_user: "",
+          role: "",
+        },
+      ],
     };
   },
 
   mounted() {
     this.getToken();
+    this.getUser();
+    this.getRole();
+    console.log(this.user.role);
+    console.log(this.user.nama_user);
   },
   methods: {
     logout() {
@@ -232,6 +304,37 @@ export default {
         console.log("NO TOKEN");
         this.$router.push("/");
       }
+    },
+    headerConfig() {
+      let header = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      };
+      return header;
+    },
+    async getUser() {
+      let url = "http://localhost:8000/api/user";
+      await this.$axios
+        .get(url, this.headerConfig())
+        .then((res) => {
+          res.data.data.forEach((element) => {
+            if (element.id_user == localStorage.getItem("id_user")) {
+              try {
+                this.user.id_user = element.id_user;
+                this.user.nama_user = element.nama_user;
+                console.log(element, "ppp");
+              } catch (error) {
+                console.log(error);
+              }
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    getRole() {
+      this.user.role = localStorage.getItem("role");
     },
   },
 };

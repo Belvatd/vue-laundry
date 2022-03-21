@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isAdmin">
     <v-form ref="form">
       <br />
       <h2 class="titlePage">Tambah Transaksi</h2>
@@ -55,13 +55,37 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
+        <div class="actionModal">
           <v-spacer></v-spacer>
-          <v-btn color="error" @click="closeModal">Tutup</v-btn>
-          <v-btn color="primary" @click="bayar"> Bayar </v-btn>
-        </v-card-actions>
+          <v-btn color="error" text @click="closeModal">Tutup</v-btn>
+          <v-btn color="primary" text @click="bayar"> Bayar </v-btn>
+        </div>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="-1"
+      :value="true"
+      bottom
+      color="primary"
+      text
+    >
+      {{ message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="primary"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </div>
+  <div v-else-if="notFound">
+    <p>You're not allowed to access</p>
   </div>
 </template>
 
@@ -88,14 +112,31 @@ export default {
     qty: 0,
     totalBayar: "",
     dialogPembayaran: false,
+    isAdmin: false,
+    notFound:false,
+    message:"",
+    snackbar: false
   }),
   mounted() {
     this.getMember();
     this.getUser();
     this.getOutlet();
     this.getPaket();
+    this.getToken();
   },
   methods: {
+    getToken() {
+      if (localStorage.getItem("token")) {
+        if (localStorage.getItem("role") === "admin" || localStorage.getItem("role") === "kasir") {
+          this.isAdmin = true;
+        } else {
+          this.notFound = true;
+        }
+      } else {
+        console.log("NO TOKEN");
+        this.$router.push("/");
+      }
+    },
     headerConfig() {
       let header = {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -182,6 +223,8 @@ export default {
           console.log(res);
           this.totalBayar = res.data.data.total;
           this.editedItem.id_transaksi = res.data.data.id_transaksi;
+          this.message = res.data.message;
+          this.snackbar = true
           this.dialogPembayaran = true;
         })
         .catch((err) => {
@@ -196,6 +239,8 @@ export default {
         .put(url, {}, this.headerConfig())
         .then(() => {
           this.closeModal();
+          this.message = res.data.message;
+          this.snackbar = true
           window.location.reload();
         })
         .catch((err) => {

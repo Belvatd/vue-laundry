@@ -23,27 +23,25 @@
                 </v-card-title>
                 <v-card-text>
                   <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.jenis"
-                          label="Jenis"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.harga"
-                          label="Harga"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.jenis"
+                        label="Jenis"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.harga"
+                        label="Harga"
+                      ></v-text-field>
+                    </v-col>
                   </v-container>
                 </v-card-text>
-                <v-card-actions>
+                <div class="actionModal">
                   <v-spacer></v-spacer>
-                  <v-btn color="error" @click="closeTambah"> Cancel </v-btn>
-                  <v-btn color="primary" @click="add"> Save </v-btn>
-                </v-card-actions>
+                  <v-btn color="error" text @click="closeTambah"> Tutup </v-btn>
+                  <v-btn color="primary" text @click="add"> Simpan </v-btn>
+                </div>
               </v-card>
             </v-dialog>
 
@@ -55,41 +53,35 @@
                 </v-card-title>
                 <v-card-text>
                   <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.jenis"
-                          label="Jenis"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.harga"
-                          label="Harga"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.jenis"
+                        label="Jenis"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedItem.harga"
+                        label="Harga"
+                      ></v-text-field>
+                    </v-col>
                   </v-container>
                 </v-card-text>
-                <v-card-actions>
+                <div class="actionModal">
                   <v-spacer></v-spacer>
-                  <v-btn color="error" text @click="closeEdit"> Cancel </v-btn>
-                  <v-btn color="primary" text @click="update"> Save </v-btn>
-                </v-card-actions>
+                  <v-btn color="error" text @click="closeEdit"> Tutup </v-btn>
+                  <v-btn color="primary" text @click="update"> Simpan </v-btn>
+                </div>
               </v-card>
             </v-dialog>
           </v-toolbar>
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn color="primary">
-            <v-icon small class="mr-2" @click="editItem(item)">
-              mdi-pencil
-            </v-icon>
-          </v-btn>
-          <v-btn color="error">
-            <v-icon small @click="deleteData(item)"> mdi-delete </v-icon>
-          </v-btn>
+          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon color="error" small @click="deleteData(item)"> mdi-delete </v-icon>
         </template>
         <template v-slot:no-data>
           <p>No Data</p>

@@ -13,16 +13,12 @@
           <p>No Data</p>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn color="primary">
-            <v-icon small class="mr-2" @click="editItem(item)">
-              mdi-pencil
-            </v-icon>
-          </v-btn>
-          <v-btn color="warning">
-            <v-icon small class="mr-2" @click="editBayar(item)">
-              mdi-alert-circle-outline
-            </v-icon>
-          </v-btn>
+          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon color="warning" small class="mr-2" @click="editBayar(item)">
+            mdi-alert-circle-outline
+          </v-icon>
         </template>
       </v-data-table>
 
@@ -33,7 +29,7 @@
             <span class="text-h5">Edit Status Pesanan</span>
           </v-card-title>
           <v-card-text>
-            <v-col cols="12" sm="6" md="4">
+            <v-col>
               <v-select
                 :items="status"
                 v-model="editedItem.status"
@@ -42,11 +38,11 @@
               </v-select>
             </v-col>
           </v-card-text>
-          <v-card-actions>
+          <div class="actionModal">
             <v-spacer></v-spacer>
-            <v-btn color="error" @click="closeEdit">Tutup</v-btn>
+            <v-btn color="error" text @click="closeEdit">Tutup</v-btn>
             <v-btn color="primary" text @click="updateStatus">Simpan</v-btn>
-          </v-card-actions>
+          </div>
         </v-card>
       </v-dialog>
 
@@ -54,51 +50,30 @@
       <v-dialog v-model="dialogPembayaran" max-width="500px">
         <v-card>
           <div id="print">
-            <v-card-title>
-              <span class="text-h5">Info Pembayaran</span>
-            </v-card-title>
-            <span class="infoTransaksi"
-              >ID Transaksi: {{ infoTransaksi.id_transaksi }}</span
-            ><br />
-            <span class="infoTransaksi"
-              >Tanggal pemesanan: {{ infoTransaksi.tanggalPesanan }}</span
-            ><br />
-            <span class="infoTransaksi"
-              >Batas waktu pembayaran: {{ infoTransaksi.batasWaktu }}</span
-            ><br />
-            <span class="infoTransaksi"
-              >Tanggal Pembayaran: {{ infoTransaksi.tanggalDibayar }}</span
-            ><br />
-            <span class="infoTransaksi"
-              >Alamat outlet: {{ infoTransaksi.alamat }}</span
-            ><br />
-            <span class="infoTransaksi">Member: {{ infoTransaksi.member }}</span
-            ><br />
-            <span class="infoTransaksi"
-              >Petugas: {{ infoTransaksi.petugas }}</span
-            ><br />
-            <span class="infoTransaksi">Paket: {{ infoTransaksi.paket }}</span
-            ><br />
-            <span class="infoTransaksi">Harga: {{ infoTransaksi.harga }}</span
-            ><br />
-            <span class="infoTransaksi"
-              >Kuantitas: {{ infoTransaksi.kuantitas }}</span
-            ><br />
-            <span class="infoTransaksi"
-              >Total Bayar: {{ infoTransaksi.totalBayar }}</span
-            ><br />
+            <struk-pembayaran
+              :qty="infoTransaksi.kuantitas"
+              :hargaSatuan="infoTransaksi.harga"
+              :item="infoTransaksi.paket"
+              :total="infoTransaksi.totalBayar"
+              :idTransaksi="infoTransaksi.id_transaksi"
+              :member="infoTransaksi.member"
+              :petugas="infoTransaksi.petugas"
+              :tanggalPesanan="infoTransaksi.tanggalPesanan"
+              :batasPembayaran="infoTransaksi.batasWaktu"
+              :status="infoTransaksi.tanggalDibayar"
+            />
           </div>
-          <v-card-actions>
-            <v-btn color="primary" class="white--text" @click="print"
+          <div class="actionModal">
+            <v-btn color="primary"  class="white--text" @click="print"
               >Print</v-btn
             >
             <v-spacer></v-spacer>
-            <v-btn color="error" @click="closeEdit">Tutup</v-btn>
-            <v-btn color="primary" @click="bayar" v-if="belumdibayar">
+            <v-btn color="primary" text @click="bayar" v-if="belumdibayar">
               Bayar
             </v-btn>
             <div v-else></div>
-          </v-card-actions>
+            <v-btn color="error" text @click="closeEdit">Tutup</v-btn>
+          </div>
         </v-card>
       </v-dialog>
     </v-app>
@@ -108,7 +83,11 @@
   </div>
 </template>
 <script>
+import StrukPembayaran from "../components/StrukPembayaran.vue";
 export default {
+  components: {
+    StrukPembayaran,
+  },
   data: () => ({
     dialogTambah: false,
     dialogDelete: false,
@@ -258,7 +237,7 @@ export default {
       await this.$axios
         .get(url, this.headerConfig())
         .then((res) => {
-          this.infoTransaksi.totalBayar = res.data.data.total;
+          this.infoTransaksi.totalBayar = res.data.total;
           this.infoTransaksi.id_transaksi = res.data.data.id_transaksi;
           this.infoTransaksi.alamat = res.data.data.outlet.alamat;
           this.infoTransaksi.member = res.data.data.member.nama_member;
@@ -270,6 +249,7 @@ export default {
           this.infoTransaksi.tanggalDibayar =
             res.data.data.tgl_bayar || "Belum dibayar";
           this.infoTransaksi.batasWaktu = res.data.data.batas_waktu;
+          console.log(res, "detail");
           // eslint-disable-next-line
           if (this.infoTransaksi.tanggalDibayar != "Belum dibayar") {
             this.belumdibayar = false;
