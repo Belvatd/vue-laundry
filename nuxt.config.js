@@ -3,8 +3,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - fe-laundry-vue',
-    title: 'fe-laundry-vue',
+    titleTemplate: '%s - MamaClean-Laundry',
+    title: 'MamaClean-Laundry',
     htmlAttrs: {
       lang: 'en'
     },

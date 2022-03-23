@@ -19,7 +19,7 @@
             <v-dialog v-model="dialogTambah" max-width="500px">
               <v-card>
                 <v-card-title>
-                  <span class="text-h5">{{ formTitle }}</span>
+                  <span>{{ formTitle }}</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
@@ -63,7 +63,7 @@
             <v-dialog v-model="dialogEdit" max-width="500px">
               <v-card>
                 <v-card-title>
-                  <span class="text-h5">{{ formTitle }}</span>
+                  <span>{{ formTitle }}</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
@@ -112,7 +112,9 @@
           <v-icon color="primary" small class="mr-2" @click="editItem(item)">
             mdi-pencil
           </v-icon>
-          <v-icon color="error" small @click="deleteData(item)"> mdi-delete </v-icon>
+          <v-icon color="error" small @click="deleteData(item)">
+            mdi-delete
+          </v-icon>
         </template>
         <template v-slot:no-data>
           <p>No Data</p>

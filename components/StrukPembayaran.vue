@@ -23,13 +23,13 @@
       </div>
       <div>
         <p>Harga</p>
-        <p>{{ hargaSatuan }}</p>
+        <p>Rp{{ hargaSatuan }}</p>
       </div>
     </div>
     <p>------------------------------------------------</p>
     <div class="strukFooter">
       <p>Harga</p>
-      <p>{{ total }}</p>
+      <p>Rp{{ total }}</p>
     </div>
     <p>
         Batas pembayaran: {{batasPembayaran}} <br>

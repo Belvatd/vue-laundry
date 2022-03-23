@@ -46,12 +46,12 @@
     <v-dialog v-model="dialogPembayaran" max-width="500px">
       <v-card>
         <v-card-title>
-          <span class="text-h5">Pembayaran</span>
+          <span>Pembayaran</span>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
-              <span class="text-h5">Total Harga: Rp{{ totalBayar }}</span>
+              <h3>Total Harga: Rp{{ infoTransaksi.totalBayar }}</h3>
             </v-row>
           </v-container>
         </v-card-text>
@@ -73,12 +73,7 @@
       {{ message }}
 
       <template v-slot:action="{ attrs }">
-        <v-btn
-          color="primary"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
+        <v-btn color="primary" text v-bind="attrs" @click="snackbar = false">
           Close
         </v-btn>
       </template>
@@ -110,12 +105,24 @@ export default {
       id_transaksi: "",
     },
     qty: 0,
-    totalBayar: "",
+    infoTransaksi: {
+      id_transaksi: "",
+      alamat: "",
+      member: "",
+      petugas: "",
+      paket: "",
+      harga: "",
+      kuantitas: "",
+      totalBayar: "",
+      tanggalPesanan: "",
+      batasWaktu: "",
+      tanggalDibayar: "",
+    },
     dialogPembayaran: false,
     isAdmin: false,
-    notFound:false,
-    message:"",
-    snackbar: false
+    notFound: false,
+    message: "",
+    snackbar: false,
   }),
   mounted() {
     this.getMember();
@@ -127,7 +134,10 @@ export default {
   methods: {
     getToken() {
       if (localStorage.getItem("token")) {
-        if (localStorage.getItem("role") === "admin" || localStorage.getItem("role") === "kasir") {
+        if (
+          localStorage.getItem("role") === "admin" ||
+          localStorage.getItem("role") === "kasir"
+        ) {
           this.isAdmin = true;
         } else {
           this.notFound = true;
@@ -221,10 +231,20 @@ export default {
         .post(url, data, this.headerConfig())
         .then((res) => {
           console.log(res);
-          this.totalBayar = res.data.data.total;
+          this.infoTransaksi.totalBayar = res.data.data.total;
+          this.infoTransaksi.id_transaksi = res.data.data.id_transaksi;
+          this.infoTransaksi.member = res.data.data.id_member;
+          this.infoTransaksi.petugas = res.data.data.id_user;
+          // this.infoTransaksi.paket = res.data.data.detail[0].paket.jenis;
+          // this.infoTransaksi.harga = res.data.data.detail[0].paket.harga;
+          this.infoTransaksi.kuantitas = res.data.data.detail[0].qty;
+          this.infoTransaksi.tanggalPesanan = res.data.data.tgl_diterima;
+          this.infoTransaksi.tanggalDibayar =
+            res.data.data.tgl_bayar || "Belum dibayar";
+          this.infoTransaksi.batasWaktu = res.data.data.batas_waktu;
           this.editedItem.id_transaksi = res.data.data.id_transaksi;
           this.message = res.data.message;
-          this.snackbar = true
+          this.snackbar = true;
           this.dialogPembayaran = true;
         })
         .catch((err) => {
@@ -240,7 +260,7 @@ export default {
         .then(() => {
           this.closeModal();
           this.message = res.data.message;
-          this.snackbar = true
+          this.snackbar = true;
           window.location.reload();
         })
         .catch((err) => {
