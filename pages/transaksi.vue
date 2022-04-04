@@ -28,17 +28,62 @@
         v-model="editedItem.id_outlet"
       >
       </v-select>
-      <v-select
-        label="Daftar Paket"
-        :items="paket"
-        item-value="id_paket"
-        item-text="jenis"
-        v-model="editedItem.id_paket"
+      <br>
+      <!-- modal add paket -->
+      <v-dialog v-model="pilihPaket" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span>Tambah Paket</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-select
+                label="Daftar Paket"
+                :items="paket"
+                item-value="id_paket"
+                item-text="jenis"
+                v-model="dataPaket.id_paket"
+              >
+              </v-select>
+              <v-text-field
+                v-model="dataPaket.qty"
+                label="Banyak (Kg)"
+                required
+              ></v-text-field>
+            </v-container>
+          </v-card-text>
+          <div class="actionModal">
+            <v-spacer></v-spacer>
+            <v-btn color="error" text @click="closeModal">Tutup</v-btn>
+            <v-btn color="primary" text @click="addPaket(dataPaket)"
+              >Tambah</v-btn
+            >
+          </div>
+        </v-card>
+      </v-dialog>
+      <v-data-table
+        :headers="headers"
+        :items="tableValues"
+        sort-by="calories"
+        class="elevation-1"
       >
-      </v-select>
-
-      <v-text-field v-model="qty" label="Banyak (Kg)" required></v-text-field>
-      <br />
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Keranjang</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+            Total Bayar: {{total}}
+            <v-spacer></v-spacer>
+            <v-btn class="mr-4 primary" @click="choosePaket">
+              Tambah Item
+            </v-btn>
+          </v-toolbar>
+        </template>
+        
+        <template v-slot:no-data>
+          <p>No Data</p>
+        </template>
+      </v-data-table>
+      <br /><br />
       <v-btn class="mr-4 primary" @click="submit"> submit </v-btn>
     </v-form>
 
@@ -85,6 +130,7 @@
 </template>
 
 <script>
+import formatCurrency from '../util';
 export default {
   data: () => ({
     valid: true,
@@ -101,10 +147,14 @@ export default {
       id_user: "",
       id_member: "",
       id_outlet: "",
-      id_paket: "",
       id_transaksi: "",
     },
-    qty: 0,
+    dataPaket: {
+      id_paket: "",
+      qty: 0,
+      jenis: "",
+      harga: "",
+    },
     infoTransaksi: {
       id_transaksi: "",
       alamat: "",
@@ -118,11 +168,25 @@ export default {
       batasWaktu: "",
       tanggalDibayar: "",
     },
+    headers: [
+      {
+        text: "ID",
+        sortable: false,
+        value: "id_paket",
+      },
+      { text: "Jenis", value: "jenis" },
+      { text: "Harga", value: "harga" },
+      { text: "Qty", value: "qty" },
+    ],
+    tableValues: [],
     dialogPembayaran: false,
     isAdmin: false,
     notFound: false,
     message: "",
     snackbar: false,
+    pilihPaket: false,
+    cartItems: [],
+    total: "",
   }),
   mounted() {
     this.getMember();
@@ -132,6 +196,38 @@ export default {
     this.getToken();
   },
   methods: {
+    async addPaket(item) {
+      let url = "http://localhost:8000/api/paket";
+      await this.$axios
+        .get(url, this.headerConfig())
+        .then((res) => {
+          res.data.data.forEach((element) => {
+            if (element.id_paket == item.id_paket) {
+              try {
+                console.log(element);
+                this.dataPaket.jenis = element.jenis;
+                this.dataPaket.harga = element.harga;
+              } catch (error) {
+                console.log(error);
+              }
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.cartItems.push({ ...item });
+      this.tableValues.push({ ...item });
+      localStorage.setItem("cartItems", JSON.stringify(this.cartItems));
+      this.totalHarga();
+      this.pilihPaket = false;
+    },
+    totalHarga() {
+      this.total =formatCurrency(this.cartItems.reduce((a, c) => a + c.harga * c.qty, 0));
+      localStorage.setItem("total",this.cartItems.reduce((a, c) => a + c.harga * c.qty, 0));
+      console.log(this.cartItems, "ppp");
+    },
+    cartPaket() {},
     getToken() {
       if (localStorage.getItem("token")) {
         if (
@@ -220,12 +316,10 @@ export default {
         id_member: this.editedItem.id_member,
         id_user: parseInt(localStorage.getItem("id_user")),
         id_outlet: this.editedItem.id_outlet,
-        list_paket: [
-          {
-            id_paket: this.editedItem.id_paket,
-            qty: this.qty,
-          },
-        ],
+        total : localStorage.getItem("total"),
+        list_paket: localStorage.getItem("cartItems")
+          ? JSON.parse(localStorage.getItem("cartItems"))
+          : [],
       };
       await this.$axios
         .post(url, data, this.headerConfig())
@@ -235,8 +329,6 @@ export default {
           this.infoTransaksi.id_transaksi = res.data.data.id_transaksi;
           this.infoTransaksi.member = res.data.data.id_member;
           this.infoTransaksi.petugas = res.data.data.id_user;
-          // this.infoTransaksi.paket = res.data.data.detail[0].paket.jenis;
-          // this.infoTransaksi.harga = res.data.data.detail[0].paket.harga;
           this.infoTransaksi.kuantitas = res.data.data.detail[0].qty;
           this.infoTransaksi.tanggalPesanan = res.data.data.tgl_diterima;
           this.infoTransaksi.tanggalDibayar =
@@ -259,9 +351,9 @@ export default {
         .put(url, {}, this.headerConfig())
         .then(() => {
           this.closeModal();
+          window.location.reload();
           this.message = res.data.message;
           this.snackbar = true;
-          window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -269,6 +361,10 @@ export default {
     },
     closeModal() {
       this.dialogPembayaran = false;
+      this.pilihPaket = false;
+    },
+    choosePaket() {
+      this.pilihPaket = true;
     },
   },
 };

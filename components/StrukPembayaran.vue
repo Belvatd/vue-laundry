@@ -12,7 +12,7 @@
       </p>
     </div>
     <p>------------------------------------------------</p>
-    <div class="strukItem">
+    <!-- <div class="strukItem">
       <div>
         <p>Qty</p>
         <p>{{ qty }}</p>
@@ -25,7 +25,22 @@
         <p>Harga</p>
         <p>Rp{{ hargaSatuan }}</p>
       </div>
-    </div>
+    </div> -->
+    <v-data-table
+        :headers="headers"
+        :items="tableValues"
+        class="elevation-1"
+      >
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Items</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+          </v-toolbar>
+        </template>
+        <template v-slot:no-data>
+          <p>No Data</p>
+        </template>
+      </v-data-table>
     <p>------------------------------------------------</p>
     <div class="strukFooter">
       <p>Harga</p>
@@ -51,7 +66,8 @@ export default {
     "hargaSatuan",
     "tanggalPesanan",
     "batasPembayaran",
-    "status"
+    "status",
+    "detailItems"
   ],
 };
 </script>

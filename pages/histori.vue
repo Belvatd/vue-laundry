@@ -50,18 +50,43 @@
       <v-dialog v-model="dialogPembayaran" max-width="500px">
         <v-card>
           <div id="print">
-            <struk-pembayaran
-              :qty="infoTransaksi.kuantitas"
-              :hargaSatuan="infoTransaksi.harga"
-              :item="infoTransaksi.paket"
-              :total="infoTransaksi.totalBayar"
-              :idTransaksi="infoTransaksi.id_transaksi"
-              :member="infoTransaksi.member"
-              :petugas="infoTransaksi.petugas"
-              :tanggalPesanan="infoTransaksi.tanggalPesanan"
-              :batasPembayaran="infoTransaksi.batasWaktu"
-              :status="infoTransaksi.tanggalDibayar"
-            />
+            <div class="rootStruk">
+              <div class="strukTitle">
+                <img class="logoStruk" src="../assets/logo.png" alt="" />
+              </div>
+              <div class="strukHeader">
+                <p>
+                  Mama Clean Laundry <br />
+                  Order #{{ infoTransaksi.id_transaksi }} for
+                  {{ infoTransaksi.member }} <br />
+                  Tanggal pesan: {{ infoTransaksi.tanggalPesanan }}<br />
+                  Petugas : {{ infoTransaksi.petugas }}
+                </p>
+              </div>
+              <v-data-table
+                :headers="headersItem"
+                :items="tableValuesItem"
+                class="elevation-1"
+              >
+                <template v-slot:top>
+                  <v-toolbar flat>
+                    <v-toolbar-title>Items</v-toolbar-title>
+                    <v-divider class="mx-4" inset vertical></v-divider>
+                  </v-toolbar>
+                </template>
+                <template v-slot:no-data>
+                  <p>No Data</p>
+                </template>
+              </v-data-table>
+              <div class="strukFooter">
+                <p>Harga</p>
+                <p>Rp{{ infoTransaksi.totalBayar }}</p>
+              </div>
+              <p>
+                Batas pembayaran: {{ infoTransaksi.batasWaktu }} <br />
+                Tanggal dibayar: {{ infoTransaksi.tanggalDibayar }}
+              </p>
+            </div>
           </div>
           <div class="actionModal">
             <v-btn color="primary" class="white--text" @click="print"
@@ -101,9 +126,16 @@ export default {
       { text: "Batas Waktu", value: "batas_waktu" },
       { text: "Tanggal Bayar", value: "tgl_bayar" },
       { text: "Status", value: "status" },
+      { text: "Dibayar", value: "dibayar" },
       { text: "Actions", value: "actions" },
     ],
     tableValues: [],
+    headersItem: [
+      { text: "Qty", value: "qty" },
+      { text: "Jenis", value: "jenis" },
+      { text: "Harga", value: "harga" },
+    ],
+    tableValuesItem: [],
     editedIndex: -1,
     editedItem: {
       id_transaksi: "",
@@ -149,10 +181,6 @@ export default {
     dialogEdit(val) {
       val || this.closeEdit();
     },
-  },
-
-  created() {
-    this.initialize();
   },
 
   mounted() {
@@ -223,7 +251,8 @@ export default {
             nama_user: val.user.nama_user,
             alamat: val.outlet.alamat,
             batas_waktu: val.batas_waktu,
-            tgl_bayar: val.tgl_bayar,
+            tgl_bayar: val.tgl_bayar || "-",
+            dibayar: val.tgl_bayar ? "dibayar" : "belum dibayar",
             status: val.status,
           }));
         })
@@ -237,19 +266,24 @@ export default {
       await this.$axios
         .get(url, this.headerConfig())
         .then((res) => {
+          res.data.data.detail.forEach((element) => {
+            this.infoTransaksi.paket = element.paket.jenis;
+            this.infoTransaksi.harga = element.paket.harga;
+            this.infoTransaksi.kuantitas = element.qty;
+            const jenis = this.infoTransaksi.paket;
+            const harga = this.infoTransaksi.harga;
+            const qty = this.infoTransaksi.kuantitas;
+            this.tableValuesItem.push({ jenis, harga, qty });
+          });
           this.infoTransaksi.totalBayar = res.data.total;
           this.infoTransaksi.id_transaksi = res.data.data.id_transaksi;
           this.infoTransaksi.alamat = res.data.data.outlet.alamat;
           this.infoTransaksi.member = res.data.data.member.nama_member;
           this.infoTransaksi.petugas = res.data.data.user.nama_user;
-          this.infoTransaksi.paket = res.data.data.detail[0].paket.jenis;
-          this.infoTransaksi.harga = res.data.data.detail[0].paket.harga;
-          this.infoTransaksi.kuantitas = res.data.data.detail[0].qty;
           this.infoTransaksi.tanggalPesanan = res.data.data.tgl_diterima;
           this.infoTransaksi.tanggalDibayar =
             res.data.data.tgl_bayar || "Belum dibayar";
           this.infoTransaksi.batasWaktu = res.data.data.batas_waktu;
-          console.log(res, "detail");
           // eslint-disable-next-line
           if (this.infoTransaksi.tanggalDibayar != "Belum dibayar") {
             this.belumdibayar = false;
@@ -297,8 +331,6 @@ export default {
           console.log(err);
         });
     },
-
-    initialize() {},
 
     editItem(item) {
       this.editedIndex = this.tableValues.indexOf(item);
