@@ -47,7 +47,7 @@
       </v-dialog>
 
       <!-- Modal Info Pembayaran -->
-      <v-dialog hide-overlay v-model="dialogPembayaran" max-width="500px">
+      <v-dialog persistent v-model="dialogPembayaran" max-width="500px">
         <v-card>
           <div id="print">
             <div class="rootStruk">
