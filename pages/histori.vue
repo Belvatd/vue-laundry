@@ -47,7 +47,7 @@
       </v-dialog>
 
       <!-- Modal Info Pembayaran -->
-      <v-dialog v-model="dialogPembayaran" max-width="500px">
+      <v-dialog hide-overlay v-model="dialogPembayaran" max-width="500px">
         <v-card>
           <div id="print">
             <div class="rootStruk">
@@ -266,6 +266,7 @@ export default {
       await this.$axios
         .get(url, this.headerConfig())
         .then((res) => {
+          console.log(res.data.data.detail[0].total, "detail")
           res.data.data.detail.forEach((element) => {
             this.infoTransaksi.paket = element.paket.jenis;
             this.infoTransaksi.harga = element.paket.harga;
@@ -275,7 +276,7 @@ export default {
             const qty = this.infoTransaksi.kuantitas;
             this.tableValuesItem.push({ jenis, harga, qty });
           });
-          this.infoTransaksi.totalBayar = res.data.total;
+          this.infoTransaksi.totalBayar = res.data.data.detail[0].total;
           this.infoTransaksi.id_transaksi = res.data.data.id_transaksi;
           this.infoTransaksi.alamat = res.data.data.outlet.alamat;
           this.infoTransaksi.member = res.data.data.member.nama_member;
@@ -348,6 +349,7 @@ export default {
     closeEdit() {
       this.dialogEdit = false;
       this.dialogPembayaran = false;
+      window.location.reload();
     },
   },
 };
