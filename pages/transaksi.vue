@@ -54,7 +54,7 @@
           </v-card-text>
           <div class="actionModal">
             <v-spacer></v-spacer>
-            <v-btn color="error" text @click="closeModal">Tutup</v-btn>
+            <v-btn color="error" text @click="closeModalAddPaket">Tutup</v-btn>
             <v-btn color="primary" text @click="addPaket(dataPaket)"
               >Tambah</v-btn
             >
@@ -361,6 +361,9 @@ export default {
     },
     closeModal() {
       this.dialogPembayaran = false;
+      window.location.reload();
+    },
+    closeModalAddPaket(){
       this.pilihPaket = false;
     },
     choosePaket() {

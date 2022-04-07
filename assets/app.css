@@ -169,3 +169,45 @@
   padding: 12px 16px 0 16px;
   font-family: poppins;
 }
+
+/* LOGIN */
+
+.row{
+  display: flex;
+  justify-content: space-between;
+}
+.loginImg{
+  width: 90%;
+  max-height: 800px;
+}
+.loginRow1{
+  width: 70%;
+  max-height: 900px;
+}
+.loginRow2{
+  padding: 100px 24px 36px;
+  width: 30%;
+  max-height: 900px;
+}
+.logoLogin{
+  width: 70%;
+}
+.welcomeText{
+  margin-top: 56px;
+  margin-bottom: 56px;
+}
+
+.welcomeText h2{
+  font-size: 36px;
+}
+
+.welcomeText p{
+  margin-top: 16px;
+  margin-bottom: 36px;
+  font-size: 14px;
+  color: rgb(95, 95, 95);
+}
+
+.loginBtn{
+  margin-top: 36px;
+}

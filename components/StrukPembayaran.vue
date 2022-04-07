@@ -12,7 +12,7 @@
       </p>
     </div>
     <p>------------------------------------------------</p>
-    <!-- <div class="strukItem">
+    <div class="strukItem">
       <div>
         <p>Qty</p>
         <p>{{ qty }}</p>
@@ -25,8 +25,8 @@
         <p>Harga</p>
         <p>Rp{{ hargaSatuan }}</p>
       </div>
-    </div> -->
-    <v-data-table
+    </div>
+    <!-- <v-data-table
         :headers="headers"
         :items="tableValues"
         class="elevation-1"
@@ -40,7 +40,7 @@
         <template v-slot:no-data>
           <p>No Data</p>
         </template>
-      </v-data-table>
+      </v-data-table> -->
     <p>------------------------------------------------</p>
     <div class="strukFooter">
       <p>Harga</p>
